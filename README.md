@@ -1,7 +1,9 @@
 # Password-Generator
 Installation
 To run the application, you need Python 3.x and the googletrans library. Install the library using the following command:
+<pre><code class="sh">
 pip install googletrans==4.0.0-rc1
+</code></pre>
 
 Usage
 Launching the Application:
