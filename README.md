@@ -9,7 +9,10 @@ Usage
 Launching the Application:
 
 Run the application by executing the main.py script:
-python main.py
+<pre><code class="sh">
+  python main.py
+</code></pre>
+
 
 Uploading a File:
 Click the "Browse" button to select a file containing names and surnames. The file should be in .txt format, where each line contains one name and surname separated by a space.
@@ -31,10 +34,15 @@ Choose a location to save the result. The result will be saved in .txt format, w
 
 Example File
 Example content of a file with names and surnames:
-Иван Петров
-Анна Сидорова
+<pre><code class="txt">
+ Иван Петров
+ Анна Сидорова
+</code></pre>
 
 Example Result
 Example content of the resulting file:
-Ivan Petrov Ab123
-Anna Sidorova Cd456
+<pre><code class="txt">
+ Ivan Petrov Ab123
+ Anna Sidorova Cd456
+</code></pre>
+
