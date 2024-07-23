@@ -1,8 +1,15 @@
 # Password-Generator
 Installation
-To run the application, you need Python 3.x and the googletrans library. Install the library using the following command:
+To run the application, you need Python 3.x and the following libraries:
+googletrans for text translation.
+pandas for data handling, including reading and writing Excel files.
+openpyxl for working with Excel files (required by pandas for reading Excel).
+python-docx for working with Word files
 <pre><code class="sh">
 pip install googletrans==4.0.0-rc1
+pip install pandas
+pip install openpyxl
+pip install python-docx
 </code></pre>
 
 Usage
