@@ -12,22 +12,19 @@ pip install openpyxl
 pip install python-docx
 </code></pre>
 
-Usage
-Launching the Application:
-
+# Launching the Application:
 Run the application by executing the main.py script:
 <pre><code class="sh">
   python main.py
 </code></pre>
 
+# Uploading a File:
+Click the "Browse" button to select a file containing names and surnames. The file should be in .txt, .json, or .xlsx format, where each line contains one name and surname separated by a space.
 
-Uploading a File:
-Click the "Browse" button to select a file containing names and surnames. The file should be in .txt format, where each line contains one name and surname separated by a space.
-
-Selecting a Translation Language:
+# Selecting a Translation Language:
 Choose the target translation language from the dropdown menu. Available languages are English (en), Spanish (es), French (fr), German (de), and Russian (ru).
 
-Configuring Password Parameters:
+# Configuring Password Parameters:
 Specify the password length in the "Password length" field.
 
 Select the type of characters for the password from the dropdown menu:
@@ -35,7 +32,7 @@ Select the type of characters for the password from the dropdown menu:
 "letters_digits" — letters and digits.
 "all" — letters, digits, and special characters.
 
-Processing the File:
+# Processing the File:
 Click the "Process" button to start processing the file. The application will translate the names and surnames into the selected language and generate passwords with the specified parameters.
 Choose a location to save the result. The result will be saved in .txt format, where each line contains the translated name, surname, and password.
 
