@@ -5,58 +5,67 @@ import random
 import string
 import json
 import pandas as pd
-import os
 
 class NameTranslatorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Password Generator")
-        self.root.geometry("500x500") 
-        self.root.pack_propagate(0)  
+        self.root.geometry("600x400")  
+        self.root.configure(bg="#eef4fa")  
+
         self.translator = Translator()
 
         self.create_widgets()
 
     def create_widgets(self):
-        self.file_label = tk.Label(self.root, text="Select a file:")
-        self.file_label.pack()
+        frame = tk.Frame(self.root, bg="#eef4fa")
+        frame.pack(pady=20)
 
-        self.file_button = tk.Button(self.root, text="Browse", command=self.load_file)
-        self.file_button.pack()
+        self.file_label = tk.Label(frame, text="Select a file:", bg="#eef4fa", fg="#333333", font=("Arial", 14, "bold"))
+        self.file_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-        self.language_label = tk.Label(self.root, text="Select target language:")
-        self.language_label.pack()
+        self.file_button = tk.Button(frame, text="Browse", command=self.load_file, bg="#5d8aa8", fg="black", font=("Arial", 14, "bold"))
+        self.file_button.grid(row=0, column=1, padx=10, pady=10)
+
+        self.language_label = tk.Label(frame, text="Select target language:", bg="#eef4fa", fg="#333333", font=("Arial", 14, "bold"))
+        self.language_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
         self.language_var = tk.StringVar(self.root)
-        self.language_var.set("en") 
-        self.language_menu = tk.OptionMenu(self.root, self.language_var, "en", "es", "fr", "de", "ru")
-        self.language_menu.pack()
+        self.language_var.set("en")  
+        self.language_menu = tk.OptionMenu(frame, self.language_var, "en", "es", "fr", "de", "ru")
+        self.language_menu.config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
+        self.language_menu["menu"].config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
+        self.language_menu.grid(row=1, column=1, padx=10, pady=10)
 
-        self.password_length_label = tk.Label(self.root, text="Password length:")
-        self.password_length_label.pack()
+        self.password_length_label = tk.Label(frame, text="Password length:", bg="#eef4fa", fg="#333333", font=("Arial", 14, "bold"))
+        self.password_length_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
-        self.password_length_entry = tk.Entry(self.root)
-        self.password_length_entry.insert(0, "5")  
-        self.password_length_entry.pack()
+        self.password_length_entry = tk.Entry(frame, font=("Arial", 14))
+        self.password_length_entry.insert(0, "5") 
+        self.password_length_entry.grid(row=2, column=1, padx=10, pady=10)
 
-        self.password_chars_label = tk.Label(self.root, text="Password characters:")
-        self.password_chars_label.pack()
+        self.password_chars_label = tk.Label(frame, text="Password characters:", bg="#eef4fa", fg="#333333", font=("Arial", 14, "bold"))
+        self.password_chars_label.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
         self.password_chars_var = tk.StringVar(self.root)
         self.password_chars_var.set("letters")  
-        self.password_chars_menu = tk.OptionMenu(self.root, self.password_chars_var, "letters", "letters_digits", "all")
-        self.password_chars_menu.pack()
+        self.password_chars_menu = tk.OptionMenu(frame, self.password_chars_var, "letters", "letters_digits", "all")
+        self.password_chars_menu.config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
+        self.password_chars_menu["menu"].config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
+        self.password_chars_menu.grid(row=3, column=1, padx=10, pady=10)
 
-        self.output_format_label = tk.Label(self.root, text="Select output format:")
-        self.output_format_label.pack()
+        self.output_format_label = tk.Label(frame, text="Select output format:", bg="#eef4fa", fg="#333333", font=("Arial", 14, "bold"))
+        self.output_format_label.grid(row=4, column=0, padx=10, pady=10, sticky="w")
 
         self.output_format_var = tk.StringVar(self.root)
-        self.output_format_var.set("txt")  
-        self.output_format_menu = tk.OptionMenu(self.root, self.output_format_var, "txt", "json", "xlsx")
-        self.output_format_menu.pack()
+        self.output_format_var.set("txt") 
+        self.output_format_menu = tk.OptionMenu(frame, self.output_format_var, "txt", "json", "xlsx")
+        self.output_format_menu.config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
+        self.output_format_menu["menu"].config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
+        self.output_format_menu.grid(row=4, column=1, padx=10, pady=10)
 
-        self.process_button = tk.Button(self.root, text="Process", command=self.process_file)
-        self.process_button.pack()
+        self.process_button = tk.Button(frame, text="Process", command=self.process_file, bg="#4caf50", fg="black", font=("Arial", 14, "bold"))
+        self.process_button.grid(row=5, column=0, columnspan=2, padx=10, pady=20)
 
     def load_file(self):
         self.filename = filedialog.askopenfilename(filetypes=(("All files", "*.*"),))
