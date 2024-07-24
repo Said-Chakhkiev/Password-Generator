@@ -32,21 +32,25 @@ Select the type of characters for the password from the dropdown menu:
 "letters_digits" — letters and digits.
 "all" — letters, digits, and special characters.
 
+# Selecting the Save Format:
+Choose the save format for the results from the dropdown menu:
+"txt" — text file.
+"json" — JSON file.
+"xlsx" — Excel file.
+
 # Processing the File:
 Click the "Process" button to start processing the file. The application will translate the names and surnames into the selected language and generate passwords with the specified parameters.
-Choose a location to save the result. The result will be saved in .txt format, where each line contains the translated name, surname, and password.
+Select a location to save the result. The result will be saved in the format chosen in step 5.
 
-Example File
 Example content of a file with names and surnames:
-<pre><code class="txt">
- Иван Петров
- Анна Сидорова
+<pre><code class="sh">
+Иван Петров
+Анна Сидорова
 </code></pre>
 
-Example Result
 Example content of the resulting file:
-<pre><code class="txt">
- Ivan Petrov Ab123
- Anna Sidorova Cd456
+<pre><code class="sh">
+Ivan Petrov Ab123
+Anna Sidorova Cd456  
 </code></pre>
 
