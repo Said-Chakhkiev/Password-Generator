@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter import ttk
 from transliterate import translit
+from googletrans import Translator
 import random
 import string
 import json
@@ -11,9 +12,11 @@ import re
 class NameTranslatorApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Name Translator and Password Generator")
+        self.root.title("Password Generator")
         self.root.geometry("600x500")
         self.root.configure(bg="#eef4fa")
+
+        self.translator = Translator()
 
         self.create_widgets()
 
@@ -27,35 +30,45 @@ class NameTranslatorApp:
         self.file_button = tk.Button(frame, text="Browse", command=self.load_file, bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
         self.file_button.grid(row=0, column=1, padx=10, pady=10)
 
+        self.language_label = tk.Label(frame, text="Select target language:", bg="#eef4fa", fg="#333333", font=("Arial", 14, "bold"))
+        self.language_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+        self.language_var = tk.StringVar(self.root)
+        self.language_var.set("en")
+        self.language_menu = tk.OptionMenu(frame, self.language_var, "en", "es", "fr", "de", "ru")
+        self.language_menu.config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
+        self.language_menu["menu"].config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
+        self.language_menu.grid(row=1, column=1, padx=10, pady=10)
+
         self.password_length_label = tk.Label(frame, text="Password length:", bg="#eef4fa", fg="#333333", font=("Arial", 14, "bold"))
-        self.password_length_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        self.password_length_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         self.password_length_entry = tk.Entry(frame, font=("Arial", 14))
         self.password_length_entry.insert(0, "5")
-        self.password_length_entry.grid(row=1, column=1, padx=10, pady=10)
+        self.password_length_entry.grid(row=2, column=1, padx=10, pady=10)
 
         self.password_chars_label = tk.Label(frame, text="Password characters:", bg="#eef4fa", fg="#333333", font=("Arial", 14, "bold"))
-        self.password_chars_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+        self.password_chars_label.grid(row=3, column=0, padx=10, pady=10, sticky="w")
 
         self.password_chars_var = tk.StringVar(self.root)
         self.password_chars_var.set("letters")
         self.password_chars_menu = tk.OptionMenu(frame, self.password_chars_var, "letters", "letters_digits", "all")
         self.password_chars_menu.config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
         self.password_chars_menu["menu"].config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
-        self.password_chars_menu.grid(row=2, column=1, padx=10, pady=10)
+        self.password_chars_menu.grid(row=3, column=1, padx=10, pady=10)
 
         self.output_format_label = tk.Label(frame, text="Select output format:", bg="#eef4fa", fg="#333333", font=("Arial", 14, "bold"))
-        self.output_format_label.grid(row=3, column=0, padx=10, pady=10, sticky="w")
+        self.output_format_label.grid(row=4, column=0, padx=10, pady=10, sticky="w")
 
         self.output_format_var = tk.StringVar(self.root)
         self.output_format_var.set("txt")
         self.output_format_menu = tk.OptionMenu(frame, self.output_format_var, "txt", "json", "xlsx")
         self.output_format_menu.config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
         self.output_format_menu["menu"].config(bg="#5d8aa8", fg="white", font=("Arial", 14, "bold"))
-        self.output_format_menu.grid(row=3, column=1, padx=10, pady=10)
+        self.output_format_menu.grid(row=4, column=1, padx=10, pady=10)
 
         self.process_button = tk.Button(frame, text="Process", command=self.process_file, bg="#4caf50", fg="white", font=("Arial", 14, "bold"))
-        self.process_button.grid(row=4, column=0, columnspan=2, padx=10, pady=20)
+        self.process_button.grid(row=5, column=0, columnspan=2, padx=10, pady=20)
 
         self.progress = ttk.Progressbar(self.root, orient="horizontal", length=400, mode="determinate")
         self.progress.pack(pady=20)
@@ -83,6 +96,7 @@ class NameTranslatorApp:
             password_length = int(self.password_length_entry.get())
             password_chars = self.password_chars_var.get()
             output_format = self.output_format_var.get()
+            target_language = self.language_var.get()
 
             output_filename = filedialog.asksaveasfilename(defaultextension=f".{output_format}", filetypes=(("All files", "*.*"),))
             if not output_filename:
@@ -92,11 +106,11 @@ class NameTranslatorApp:
                 output_filename += f".{output_format}"
 
             if self.filename.endswith('.json'):
-                data = self.process_json_file(password_length, password_chars)
+                data = self.process_json_file(target_language, password_length, password_chars)
             elif self.filename.endswith('.xlsx'):
-                data = self.process_excel_file(password_length, password_chars)
+                data = self.process_excel_file(target_language, password_length, password_chars)
             else:
-                data = self.process_text_file(password_length, password_chars)
+                data = self.process_text_file(target_language, password_length, password_chars)
 
             if output_format == 'txt':
                 self.save_as_text(data, output_filename)
@@ -109,7 +123,7 @@ class NameTranslatorApp:
         except Exception as e:
             messagebox.showerror("Error", str(e))
 
-    def process_text_file(self, password_length, password_chars):
+    def process_text_file(self, target_language, password_length, password_chars):
         data = []
         with open(self.filename, 'r', encoding='utf-8') as infile:
             lines = infile.readlines()
@@ -118,8 +132,8 @@ class NameTranslatorApp:
             for i, line in enumerate(lines):
                 try:
                     name, surname = line.strip().split()
-                    translated_name = self.translate_name(name)
-                    translated_surname = self.translate_name(surname)
+                    translated_name = self.translate_name(name, target_language)
+                    translated_surname = self.translate_name(surname, target_language)
                     password = self.generate_password(password_length, password_chars)
                     data.append((translated_name, translated_surname, password))
                 except Exception as e:
@@ -129,7 +143,7 @@ class NameTranslatorApp:
                     self.root.update_idletasks()
         return data
 
-    def process_json_file(self, password_length, password_chars):
+    def process_json_file(self, target_language, password_length, password_chars):
         data = []
         with open(self.filename, 'r', encoding='utf-8') as infile:
             json_data = json.load(infile)
@@ -139,8 +153,8 @@ class NameTranslatorApp:
                 try:
                     name = item['name']
                     surname = item['surname']
-                    translated_name = self.translate_name(name)
-                    translated_surname = self.translate_name(surname)
+                    translated_name = self.translate_name(name, target_language)
+                    translated_surname = self.translate_name(surname, target_language)
                     password = self.generate_password(password_length, password_chars)
                     data.append((translated_name, translated_surname, password))
                 except Exception as e:
@@ -150,7 +164,7 @@ class NameTranslatorApp:
                     self.root.update_idletasks()
         return data
 
-    def process_excel_file(self, password_length, password_chars):
+    def process_excel_file(self, target_language, password_length, password_chars):
         data = []
         df = pd.read_excel(self.filename)
         total_rows = len(df)
@@ -159,8 +173,8 @@ class NameTranslatorApp:
             try:
                 name = row['name']
                 surname = row['surname']
-                translated_name = self.translate_name(name)
-                translated_surname = self.translate_name(surname)
+                translated_name = self.translate_name(name, target_language)
+                translated_surname = self.translate_name(surname, target_language)
                 password = self.generate_password(password_length, password_chars)
                 data.append((translated_name, translated_surname, password))
             except Exception as e:
@@ -170,15 +184,17 @@ class NameTranslatorApp:
                 self.root.update_idletasks()
         return data
 
-    def translate_name(self, name):
-        translated_name = translit(name, 'ru', reversed=True)
-        translated_name = re.sub(r"[^a-zA-Z]", "", translated_name)
-        translated_name = translated_name.replace("'", "").replace("`", "").replace("’", "")
-        
+    def translate_name(self, name, target_language):
         special_cases = {
-            "Alija": "Alia",
         }
-        return special_cases.get(translated_name, translated_name)
+        if name in special_cases:
+            return special_cases[name]
+        if target_language == "en":
+            translated_name = translit(name, 'ru', reversed=True)
+        else:
+            translated_name = self.translator.translate(name, dest=target_language).text
+        translated_name = re.sub(r'[^\w\s]', '', translated_name)
+        return translated_name
 
     def save_as_text(self, data, filename):
         with open(filename, 'w', encoding='utf-8') as outfile:
