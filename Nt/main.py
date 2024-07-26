@@ -175,10 +175,8 @@ class NameTranslatorApp:
         translated_name = re.sub(r"[^a-zA-Z]", "", translated_name)
         translated_name = translated_name.replace("'", "").replace("`", "").replace("’", "")
         
-        # Handle special cases
         special_cases = {
             "Alija": "Alia",
-            # Add more special cases if necessary
         }
         return special_cases.get(translated_name, translated_name)
 
